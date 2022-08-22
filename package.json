@@ -17,7 +17,8 @@
     "url": "https://github.com/anukrati2000/creating-first-server/issues"
   },
   "homepage": "https://github.com/anukrati2000/creating-first-server#readme",
-  "dependencies": {
+  "dependencies": {},
+  "devDependencies": {
     "nodemon": "^2.0.19"
   }
 }
