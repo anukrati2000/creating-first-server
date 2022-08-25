@@ -37,16 +37,16 @@ app.delete("/todos", (req, res) => {
     })
 });
 
+// put, patch
 app.all("/todos", (req, res) => {
     res.status(501).send();
 })
 
 app.all("*", (req, res) => {
     res.status(404).send();
-})
+});
 
-// put, patch
 app.listen(port, () => {
-    //callbackTY
-    console.log(`Nodejs server started on port ${port}`); 5234
+    //callback
+    console.log(`Nodejs server started on port ${port}`);
 });
