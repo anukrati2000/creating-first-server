@@ -1,70 +1,52 @@
-const http = require("http");
+const express = require('express');
+
+// initialisation
+const app = express();
+// application will now use json format for data
+app.use(express.json());
 
 const port = 8081;
 
 const toDoList = ["Complete Node Byte", "Play Cricket"];
 
-http
-    .createServer((req, res) => {
-        const { method, url } = req;
-        if (url === "/todos") {
-            if (method === "GET") {
-                res.writeHead(200, { "Content-type": "text/html" });
-                res.write(toDoList.toString());
-            }
-            else if (method === 'POST') {
-                let body = '';
-                req.on("error", (err) => {
-                    console.error(err);
-                }).on('data', (chunk) => {
-                    body += chunk;
-                }).on('end', () => {
-                    body = JSON.parse(body);
-                    let newToDo = toDoList;
-                    newToDo.push(body.item);
-                    console.log(newToDo);
-                    res.writeHead(201);
-                });
-            }
-            else if (method === 'DELETE') {
-                let body = '';
-                req.on('error', (err) => {
-                    console.error(err);
-                }).on('data', (chunk) => {
-                    body += chunk;
-                }).on('end', () => {
-                    body = JSON.parse(body);
-                    let deleteThis = body.item;
+// http://localhost:8081/todos
+app.get("/todos", (req, res) => {
+    // callback
+    res.status(200).send(toDoList);
+});
 
-                    /*for (let i = 0; i < toDoList.length; i++) {
-                        if (toDoList[i] === deleteThis) {
-                            toDoList.splice(i, 1);
-                            break;
-                        }
-                    }
-                    */
+app.post("/todos", (req, res) => {
+    const newToDo = req.body.item;
+    toDoList.push(newToDo);
+    res.status(201).send({
+        message: "Task added successfully",
+    });
+});
 
-                    toDoList.find((value, index) => {
-                        if (value === deleteThis) {
-                            toDoList.splice(index, 1);
-                        }
-                    });
+app.delete("/todos", (req, res) => {
+    const itemToDelete = req.body.item;
 
-                    res.writeHead(204);
-                });
-            }
-            else {
-                res.writeHead(501);
-            }
+    toDoList.find((element, index) => {
+        if (element === itemToDelete) {
+            toDoList.splice(index, 1);
         }
-        else {
-            res.writeHead(404);
-        }
-        res.end();
-    })
-    .listen(port, () => { // calback function
-        console.log(`Nodejs server started on port ${port}`);
     });
 
+    res.status(202).send({
+        message: `Deleted item "${req.body.item}"`,
+    })
+});
 
-// http://localhost:8081;
+app.all("/todos", (req, res) => {
+    res.status(501).send();
+})
+
+app.all("*", (req, res) => {
+    res.status(404).send();
+})
+
+// put, patch
+app.listen(port, () => {
+    //callbackTY
+    console.log(`Nodejs server started on port ${port}`); 5234
+});
